@@ -19,6 +19,6 @@ with
  - P equals 0 or 1. 0 means unsupervised scheme (MSAR model) and 1 mean PHMC-LAR model
  - D  the autoregressive order
 
-## Inference task learning
+## Inference task
  File cmapss_inference.py
 
