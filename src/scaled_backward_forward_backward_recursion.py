@@ -52,14 +52,7 @@ import math
 #  @return the probability to observe the state i at time t gamma_t = P(z_t=i | X, Sigma, Theta).
 #  
 def BFB(M, LL, Sigma, A, Pi):
-        
-    """
-    #print("A=", A)
-    #print("Pi=", Pi)
-    #print("Sigma=", Sigma)
-    #print("LL =", LL) 
-    """
-    
+            
     #----------probabilities P(sigma_t|sigma_{t-1}) computing
     prob_sigma = compute_prob_sigma(M, Sigma, A, Pi)
                   

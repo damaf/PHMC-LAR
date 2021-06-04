@@ -23,7 +23,7 @@ Created on Tue Oct 27 22:55:36 2020
 
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 import time
 import pickle
 import numpy as np
@@ -97,8 +97,8 @@ start_time = time.time()
 
 #----three command line argument are required
 if(len(sys.argv) != 5):
-    print("ERROR: script run_training.py takes 4 arguments !")
-    print("Usage: ./run_training.py train_data_file output_file P D")
+    print("ERROR: script cmapss-experiment.py takes 4 arguments !")
+    print("Usage: python3 cmapss-experiment.py train_data_file output_file P D")
     exit(1)
 
 
