@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Oct 27 22:55:36 2020
 
-@author: dama-f
-"""
 
 ##############################################################################
 #  This experiment consists of learning PHMC-LAR model on partially labelled 

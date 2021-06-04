@@ -1,10 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Nov  3 19:11:11 2020
-
-@author: dama-f
-"""
 
 import numpy as np
 import pickle
