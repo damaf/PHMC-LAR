@@ -14,12 +14,3 @@ No warranty of any kind, express or implied, is included with this software;
 use at your own risk, responsibility for damages (if any) to anyone resulting
 from the use of this software rests entirely with the user.
 
-
-
-fichier authors.txt de contenu :
-
-This software program is dedicated to model learning and hidden state inference for the M* model.  (Tout ton code et tes noms de répertoire font certainement référence à PHMC-LAR, pas question d'anonymiser jusque-là dans ce cas.)
-
-List of contributors involved in the development of software programs:
-- Fatoumata Dama, PhD student (2019-), University of Nantes, France,
-under the supervision of Christine Sinoquet, PhD supervisor, LS2N / UMR CNRS 6004 (Digital Science Institute of Nantes), University of Nantes, France.
