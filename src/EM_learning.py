@@ -46,10 +46,7 @@ def run_EM_on_init_param(X_order, nb_regimes, data, initial_values, states, \
 def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
                    innovation, nb_init, nb_iters_init):
         
-    print("********************EM initialization begins**********************")
-    
-    #------Data used in initialization procedure
-    # initialization is performed on the first 10 sequences
+    print("********************EM initialization begins**********************")       
     
     #------Runs EM nb_iters_init times on each initial values 
     output_params = []
@@ -69,7 +66,6 @@ def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
         
     #------Find parameters that yields maximum likehood
     #maximum likeliked within [-inf, 0]
-    print("==================LIKELIHOODS====================")
     max_ll = -1e300  
     max_ind = -1
     for i in range(nb_init):     
@@ -119,9 +115,7 @@ def hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, \
     
     #---------------AR process initialization  
     if (innovation == "gaussian"):
-        X_process = Gaussian_X(X_order, nb_regimes, data, initial_values)        
-    elif (innovation == "gamma"):
-        X_process = Gamma_X(X_order, nb_regimes, data, initial_values)        
+        X_process = Gaussian_X(X_order, nb_regimes, data, initial_values)              
     else:
         print()
         print("ERROR: file EM_learning.py: the given distribution is not supported!")
@@ -209,10 +203,7 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
     S = len(X_process.data)
     #nb regimes
     M = X_process.nb_regime
-    
-    #total_log_ll is in [-inf, 0]
-    prec_total_log_ll = -1e300  
-    
+        
     #current/previous estimated parameters
     prev_estimated_param = (-np.inf,  PHMC_process.A, PHMC_process.Pi, [], [], \
                X_process.coefficients, X_process.sigma, X_process.intercept,  \
@@ -270,16 +261,23 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
         #### end OpenMP parallel execution
         #----------------------------end M-steps 
         
-        #-----------------------begin EM stopping condition        
-        delta_log_ll = total_log_ll - prec_total_log_ll   
-        
+        #-----------------------begin EM stopping condition          
         abs_of_diff = compute_norm(prev_estimated_param, PHMC_process, X_process) 
         
         curr_estimated_param = ((total_log_ll + X_process.init_val_ll()),  \
                PHMC_process.A, PHMC_process.Pi, list_Gamma, list_Alpha,  \
                X_process.coefficients, X_process.sigma, X_process.intercept,  \
                X_process.psi)
-    
+
+        if(np.isnan(abs_of_diff)):  #EM stops with a warning
+            #LOG-info
+            if(log_info):
+                print("--------------EM stops with a warning------------")
+                print("At iteration {}, NAN values encountered in the estimated parameters".format(ind+1))
+                print("log_ll = {}".format(total_log_ll))
+                print("PARAMETERS AT ITERATION {} ARE RETURNED".format(ind))
+            return prev_estimated_param
+        
         if(abs_of_diff < epsilon):  #convergence           
             #LOG-info
             if(log_info):
@@ -292,10 +290,7 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
             if(log_info):
                 print("iterations = {}".format(ind+1))
                 print("schift in parameter = {}".format(abs_of_diff))
-        
-            #update prec_total_log_ll
-            prec_total_log_ll = total_log_ll
-        
+                
             #update prev_estimated_param
             prev_estimated_param = curr_estimated_param
         #-----------------------end EM stopping condition  

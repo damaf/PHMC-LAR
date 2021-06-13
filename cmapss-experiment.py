@@ -104,6 +104,7 @@ P = int(sys.argv[3])
 
 if(P != 0 and P != 1):
     print("ERROR: script run_training.py: P == 0 or P == 1 !")
+    exit(1)
     
 
 #----hyper-parameters setting

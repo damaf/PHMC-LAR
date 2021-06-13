@@ -1,5 +1,4 @@
 import numpy as np
-import math
 from scipy.stats import dirichlet
 #####################################################################################
 ##  @package PHMC
