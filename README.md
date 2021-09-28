@@ -1,9 +1,6 @@
----
-title: "Partially Hidden Markov Chain Linear AutoRegressive model (PHMC-LAR)"
-output:
-  html_document: default
-  pdf_document: default
----
+
+# Partially Hidden Markov Chain Linear AutoRegressive model (PHMC-LAR)"
+
 
 PHMC-LAR is a novel regime switching model dedicated to time series data.\
 Let $\{X_t\}$ a time series subject to switches in regime. 
@@ -38,44 +35,44 @@ hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, states, in
 
 **Parameters**
 
-  * **X_order: *positive int value* **\
+  * **X_order: *positive int value***\
     Autoregressive order.\ 
-  * **nb_regimes: *strictly positive int* **\
+  * **nb_regimes: *strictly positive int***\
     Number of switching regimes.\
-  * **data: *list of array_like* **\
+  * **data: *list of array_like***\
     List of S observed time series where data[s] is a column vector of dimension $T_s \times 1$. And $T_s$ denotes the size of the $s^{th}$ time series starting at timestep t = X_order + 1.\  
-  * **initial_values: *list of array_like* **\
+  * **initial_values: *list of array_like***\
     List of S initial values where initial_values[s] is a column vector of dimension X_order$\times 1$. initial_values[s] are initial values associated with the $s^{th}$ time series.\
-  * **states: *list of array_like* **\
+  * **states: *list of array_like***\
     List of S state sequences where states[s] is a line vector of dimension $1 \times T_s$:\
      + if states[s][0,t] = -1 then $Z^{(s)}_t$ is latent.\
      + otherwise states[s][0,t] is in $\{0, 1, 2, ..., \text{nb_regimes}-1\}$ and $Z^{(s)}_t$ is observed to be equal to states[s][0,t].\
-  * **innovation: *string* **\
+  * **innovation: *string***\
     Law of error terms, only *'gaussian'* noises are supported.\
-  * **nb_iters: *int value* **\
+  * **nb_iters: *int value***\
     Maximum number of EM iterations.\
-  * **epsilon: *real value* **\
+  * **epsilon: *real value***\
     Convergence precision. EM will stops when the shift in parameters' estimate between two consecutive iterations is less than epsilon. L1-norm was used.\
 
 **Returns** (log_ll, A, Pi, list_Gamma, list_Alpha, ar_coefficients, sigma, intercept, psi)
    
-   * **log_ll: r*eal value* **\
+   * **log_ll: r*eal value***\
      loglikelihood
-   * **A: *array_like* **\
+   * **A: *array_like***\
      Transition matrix.
-   * **Pi: *array_like* **\
+   * **Pi: *array_like***\
      Initial state probabilities.
-   * **list_Gamma: *list of array_like* **\
+   * **list_Gamma: *list of array_like***\
      Smoothed marginal probabilities.
-   * **list_Alpha: *list array_like* **\
+   * **list_Alpha: *list array_like***\
      Filtered marginal probabilities.
-   * **ar_coefficients: *array_like* **\
+   * **ar_coefficients: *array_like***\
      Autoregressive coefficients of dimension X_order$\times$nb_regimes. ar_coefficients[i,k] is the coefficient associated with $X_{t-i}$ within regime k.
-   * **sigma: *array_like* **\
+   * **sigma: *array_like***\
      Standard deviation, nb_regimes length array.
-   * **intercept: *array_like* **\
+   * **intercept: *array_like***\
      Intercept, nb_regimes length array.
-   * **psi: *dict* **\
+   * **psi: *dict***\
      Initial law parameters having the following entries:
      + mean: X_order length array.
      + covar: X_order x X_order matrix.\
