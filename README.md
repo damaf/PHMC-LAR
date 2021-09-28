@@ -201,4 +201,3 @@ with
  
 The estimated model is serialized within a binary file and saved in *output_dir*.\
 File *cmapss_inference.py* contains functions that allow to perform inference task.
-
