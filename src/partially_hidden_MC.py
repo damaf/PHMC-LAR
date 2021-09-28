@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from scipy.stats import dirichlet
 #####################################################################################
 ##  @package PHMC
@@ -36,22 +37,24 @@ class PHMC():
                
     def __init__(self, M):   
         
-        ## @brief
-        #
         self.nb_states = M
         
-        ## @brief
-        #
+        """
+        #-----random initialization          
         self.Pi = np.zeros(dtype=np.float64, shape=(1, M))
         concentration_param = [1 for i in range(M)]
         self.Pi[0, :] = dirichlet.rvs(concentration_param, 1)[0] 
         
-        ## @brief
-        #
         self.A = np.zeros(dtype=np.float64, shape=(M, M))
         for i in range(M):
             self.A[i, :] = dirichlet.rvs(concentration_param, 1)[0] 
+        """
         
+        #-----uniform initialization      
+        self.Pi = np.ones(dtype=np.float64, shape=(1, M)) / M        
+        self.A = np.ones(dtype=np.float64, shape=(M, M)) / M
+    
+
         
     ## @brief
     #
@@ -77,8 +80,9 @@ class PHMC():
 #  sequence. s in 1, ..., S, with S the number of observed sequences.
 #  T_s denotes the specific size of sequence s (order initial values excluded).
 #
-#  @return Matrix MxM, A[i,j] = a_{i,j} = P(Z_t=j|Z_{t-1}=i).
-#  @return Pi Line vector 1xM, initial state probabilities, Pi[1,k] = P(Z_1 = k).
+#  @return (A, Pi):
+#    * Matrix MxM, A[i,j] = a_{i,j} = P(Z_t=j|Z_{t-1}=i).
+#    * Pi Line vector 1xM, initial state probabilities, Pi[1,k] = P(Z_1 = k).
 #  
 def update_MC_parameters(F, list_Gamma):
     
@@ -97,9 +101,17 @@ def update_MC_parameters(F, list_Gamma):
             aux = aux + list_Gamma[s][0, i]      
                 
         Pi[0, i] = aux / S
-               
+        
+        #assertion: valid value domain
+        assert(not math.isnan(Pi[0,i]))
+        assert(Pi[0, i] >= 0.)
+       
     #normalization, Pi's in [0,1] and sum at one
     Pi[0, :] = Pi[0, :] / np.sum(Pi[0, :])
+    
+    #assertion: valid value domain
+    assert(not math.isnan(Pi[0, M-1]))
+    assert(Pi[0, M-1] >= 0.)
             
     #--------------------A: A equals F normalized
     for i in range(M):
@@ -109,11 +121,18 @@ def update_MC_parameters(F, list_Gamma):
             state_i_freq = state_i_freq + np.sum(list_Gamma[s][:, i])
                    
         #If state_i_freq = 0, state i does not appear
-        F[i, :] = F[i, :] / (state_i_freq + np.finfo(0.).tiny)
+        if(state_i_freq == 0):
+            assert(np.sum(np.sum(F[i, :])) == 0)   
                 
-        #normalization: F[i, :] are in [0,1] and sum at ones
-        F[i, :] = F[i, :] / np.sum(F[i, :])
+        else:
+            F[i, :] = F[i, :] / (state_i_freq + np.finfo(0.).tiny)
+            #normalization: F[i, :] are in [0,1] and sum at ones
+            assert(np.sum(np.sum(F[i, :])) != 0)                            
+            F[i, :] = F[i, :] / np.sum(F[i, :])
                
+        #assertion: valid value domain
+        assert(np.sum(np.isnan(F[i, :])) == 0)
+        assert(np.sum(F[i, :] < 0.) == 0)
             
     return (F, Pi)
 

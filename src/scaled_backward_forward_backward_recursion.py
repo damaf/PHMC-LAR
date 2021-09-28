@@ -70,9 +70,13 @@ def BFB(M, LL, Sigma, A, Pi):
                     prob_sigma)
     #Gamma computing
     Gamma = compute_gamma(Xi)
+    """
+    #another way to compute gamma
+    Gamma = compute_gamma_bis(Alpha_tilde, Beta_tilde, C_t)
+    """
     #ll computing
     log_ll = likelihood(C_t)
-   
+    
     
     return (log_ll, Xi, Gamma, Alpha_tilde)
 
@@ -92,9 +96,9 @@ def compute_prob_sigma(M, Sigma, A, Pi):
         prob_sum = np.sum(Pi[0, :]) 
     else:                         #S_1 is observed      
         prob_sum = Pi[0, class_]
-           
+          
     prob_sigma[0] = prob_sum + np.finfo(0.).tiny
-               
+                           
     #---other time-step
     for t in range(1, T):
                 
@@ -156,10 +160,14 @@ def first_backward_step(M, Sigma, A, prob_sigma):
             else:   #Sigma_{t+1} is observed 
                 tau_t_z = (Tau_tilde[t+1, class_] * A[z, class_]) / \
                                 prob_sigma[t]                   
-                                                           
+                                     
+            #assertion: valid value domain
+            assert(not math.isnan(tau_t_z))
+            assert(tau_t_z >= 0.) 
+                      
+            #product of values within [0,1[ tends fastly to 0
             Tau_tilde[t, z] = tau_t_z + np.finfo(0.).tiny
-            
-                       
+                                
     return Tau_tilde
 
 
@@ -207,7 +215,7 @@ def forward_step(M, LL, Sigma, A, Pi, Tau_tilde, prob_sigma):
     else:               #observed state
         C_t[0] = LL[0, class_] * Pi[0, class_]        
     C_t[0] = C_t[0] + np.finfo(0.).tiny
-    
+        
     #---compute Alpha_tilde_1
     for z in range(M):      
         
@@ -218,7 +226,11 @@ def forward_step(M, LL, Sigma, A, Pi, Tau_tilde, prob_sigma):
         else:               #observed state
             alpha_0_z = aux * (Tau_tilde[0, z] / Tau_tilde[0, class_]) / \
                             (Pi[0, class_] + np.finfo(0.).tiny)
-                        
+        
+        #assertion: valid value domain
+        assert(not math.isnan(alpha_0_z))
+        assert(alpha_0_z >= 0.) 
+                
         Alpha_tilde[0, z] = alpha_0_z
                 
     #----------recursive case
@@ -244,7 +256,7 @@ def forward_step(M, LL, Sigma, A, Pi, Tau_tilde, prob_sigma):
                 tmp_sum = tmp_sum + (LL[t, j] * Alpha_tilde[t-1, i] * A[i, j])   
                         
         C_t[t] = tmp_sum + np.finfo(0.).tiny
-                    
+        
         #---compute Alpha_tilde_t
         for z in range(M):
                        
@@ -264,7 +276,11 @@ def forward_step(M, LL, Sigma, A, Pi, Tau_tilde, prob_sigma):
                                                                 
             else:  #z not in Sigma_t
                 alpha_t_z = 0.0
-                                        
+                            
+            #assertion: valid value domain
+            assert(not math.isnan(alpha_t_z))
+            assert(alpha_t_z >= 0.)
+            
             Alpha_tilde[t, z] = alpha_t_z
                                   
         
@@ -329,14 +345,14 @@ def second_backward_step(M, LL, Sigma, A, Pi, Tau_tilde, C_t, prob_sigma):
                             (Tau_tilde[t+1, class_] / Tau_tilde[t, z]) / C_t[t] 
                     aux2_ = Beta_tilde[t+1, class_] / prob_sigma[t]
                     beta_t_z = min(1e300, aux1_*aux2_)
-                                   
-                if(math.isnan(beta_t_z) or math.isinf(beta_t_z)):
-                    print("t = {}, aux1_ = {}, aux2_ = {}, beta_t_z = {}, Beta_tilde[t+1, class_] = {}".format(\
-                             t, aux1_, aux2_, beta_t_z, Beta_tilde[t+1, class_]))
-                  
+                                                     
             else:  #z not in Sigma_t
                 beta_t_z = 0.0
-                                     
+                         
+            #assertion: valid value domain
+            assert(not math.isnan(beta_t_z))
+            assert(beta_t_z >= 0.)
+            
             Beta_tilde[t, z] = beta_t_z
             
             
@@ -359,13 +375,41 @@ def likelihood(C_t):
     log_ll = 0.0    
     for t in range(T):
         log_ll = log_ll + np.log(C_t[t] + np.finfo(0.).tiny)
-
-              
+        
+    #assertion: value domain
+    assert(not math.isinf(log_ll))
+    assert(not math.isnan(log_ll))
+        
     return log_ll
 
 
+## @fn compute_gamma_bis
+#  @brief This function compute gamma probabilities from Alpha_tilde, 
+#   Beta_tilde and C_t.
+#  
+#  @param Alpha_tilde
+#  @param Beta_tilde
+#  @param C_t
+#
+#  @return A matrix TxM Gamma with Gamma[t,i] = P(Z_t=z | X, Sigma, Theta).
+#
+def  compute_gamma_bis(Alpha_tilde, Beta_tilde, C_t):
+      
+    (T, M) = Alpha_tilde.shape
+    Gamma = np.zeros(dtype=np.float64, shape=(T, M))
+    
+    for t in range(T):
+        for z in range(M):
+            Gamma[t, z] = Alpha_tilde[t, z] * Beta_tilde[t, z] * C_t[t]
+            
+        #normalization: Gamma[t, :] are in [0,1] and sums to one
+        Gamma[t, :] = Gamma[t, :] / np.sum(Gamma[t, :])
+                  
+    return Gamma
+
+
 ## @fn compute_gamma
-#  @brief This function runs the second backward step of BFB.
+#  @brief This function compute gamma probabilities from Xi probabilities.
 #  
 #  @param Xi
 #
@@ -457,6 +501,12 @@ def compute_Xi(LL, Sigma, Tau_tilde, A, Pi, Alpha_tilde, Beta_tilde, \
                     aux = Beta_tilde[t, j] * A[i, j] * LL[t, j] * \
                               (Alpha_tilde[t-1, i] / prob_sigma[t-1])
                     Xi[t, i, j] =  aux * (Tau_tilde[t, j] / Tau_tilde[t-1, i]) 
-                                                                         
+                                    
+                #assertion: valid value domain
+                assert(not math.isnan(Xi[t, i, j]))
+                assert(Xi[t, i, j]  >= 0.)
+    
+        #if i is not in Sigma_{t-1} or j is not in Sigma_t then Xi[t, i, j] = 0     
+                                 
     return Xi
     

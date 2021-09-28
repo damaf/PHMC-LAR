@@ -1,43 +1,20 @@
 import numpy as np
+import seaborn as sb
+import matplotlib.pyplot as plt
 import math
+from scipy.stats import norm, gamma, multinomial
+#from regime_switching_ARM import likelihood_k
 from regime_switching_ARM import pdf
 
-
-
-## @fn 
-#  @brief Compute the mean percentage error between two partitions
+############################################################################
+## @package Util functions
+# 
 #
-#  @param data_S1 List of N states sequences, each is a 1xT arrays.
-#   Reference labels.
-#  @param data_S2 List of N states sequences, each is a 1xT arrays.
-#   Inferred labels.
-#
-#  @return N-length array
-#
-def mean_percentage_error(data_S1, data_S2):
-    
-    #nb sequences
-    N1 = len(data_S1)
-    N2 = len(data_S2)  
-    assert(N1 == N2) 
-    
-    mean_errors = -1 * np.ones(shape=N1, dtype=np.float64)
-    
-    for s in range(N1):
-        
-        #sequence length
-        T1 = data_S1[s].shape[1]
-        T2 = data_S2[s].shape[1]  
-        assert(T1 == T2)        
-    
-        assert(np.sum(data_S1[s][0,:] < 0) == 0)
-        assert(np.sum(data_S2[s][0,:] < 0) == 0)
-                
-        mean_errors[s] =  np.mean(data_S1[s][0,:] != data_S2[s][0,:])
-               
-    return mean_errors
 
 
+#/////////////////////////////////////////////////////////////////////////////
+# Sample likelihood computing, used in inference algorithm
+#/////////////////////////////////////////////////////////////////////////////
 ## @fn likelihood_k
 #
 #  @param parameters_k, order+2 vector, parameters_k[0:order] = autoregressive 
@@ -74,6 +51,7 @@ def compute_LL_k(parameters_k, Obs_seq, initial_values, order, distribution):
         #interval. Only mass function are bordered within [0, 1].
         
     return LL
+
 
 ## @fn
 #
@@ -113,3 +91,100 @@ def compute_LL(coefficients, intercept, sigma, innovation, Obs_seq):
                                  order, innovation)
    
     return LL
+    
+
+#/////////////////////////////////////////////////////////////////////////////
+#        ERROR METRICS: INFERENCE
+#/////////////////////////////////////////////////////////////////////////////
+
+## @fn 
+#  @brief Compute the mean percentage error between two partitions
+#
+#  @param data_S1 List of N states sequences, each is a 1xT arrays.
+#   Reference labels.
+#  @param data_S2 List of N states sequences, each is a 1xT arrays.
+#   Inferred labels.
+#
+#  @return N-length array
+#
+def mean_percentage_error(data_S1, data_S2):
+    
+    #nb sequences
+    N1 = len(data_S1)
+    N2 = len(data_S2)  
+    assert(N1 == N2)
+    
+    mean_errors = -1 * np.ones(shape=N1, dtype=np.float64)
+    
+    for s in range(N1):
+        
+        #sequence length
+        T1 = data_S1[s].shape[1]
+        T2 = data_S2[s].shape[1]  
+        assert(T1 == T2)        
+    
+        assert(np.sum(data_S1[s][0,:] < 0) == 0)
+        assert(np.sum(data_S2[s][0,:] < 0) == 0)
+                
+        mean_errors[s] =  np.mean(data_S1[s][0,:] != data_S2[s][0,:])
+               
+    return mean_errors
+
+
+#/////////////////////////////////////////////////////////////////////////////
+#        ERROR METRICS: FORECASTING
+#/////////////////////////////////////////////////////////////////////////////
+
+## @fn
+#  @brief Computes 
+#   Mean Absolute Percentage Error (MAPE)
+#   Root Mean Square Error (RMSE)
+#   Biais metric 
+#
+#  @param X_obs List of N Hx1 arrays.
+#  @param X_pred List of N Hx1 arrays.
+#
+#  @return Hx3 array
+#
+def compute_forecast_error(X_obs, X_pred, H):
+    
+    #nb sequences
+    N = len(X_obs)
+    assert(N == len(X_pred))
+    
+    assert(N == 1) 
+    
+    mean_errors = np.zeros(shape=(H,3), dtype=np.float64)
+    
+    for h in range(H):
+               
+        tmp_mae = 0.0
+        tmp_rmse = 0.0
+        tmp_bias = 0.0
+        
+        for s in range(N):
+            #MAPE
+            tmp_mae = tmp_mae + np.abs( (X_obs[s][h,0] - X_pred[s][h,0]) / X_obs[s][h,0] )
+            #RMSE
+            tmp_rmse = tmp_rmse + (X_obs[s][h,0] - X_pred[s][h,0])**2
+            #Bias
+            tmp_bias = tmp_bias + (X_obs[s][h,0] - X_pred[s][h,0])
+                
+            #print(X_obs[s][h,0] - X_pred[s][h,0])
+                
+        mean_errors[h, 0] = tmp_mae/N
+        mean_errors[h, 1] = np.sqrt(tmp_rmse/N)
+        mean_errors[h, 2] = tmp_bias/N
+                  
+    return mean_errors     
+
+
+
+
+
+
+
+
+
+
+       
