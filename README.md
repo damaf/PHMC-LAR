@@ -1,9 +1,6 @@
----
-title: "Partially Hidden Markov Chain Linear AutoRegressive model (PHMC-LAR)"
-output:
-  pdf_document: default
-  html_document: default
----
+
+# Partially Hidden Markov Chain Linear AutoRegressive model (PHMC-LAR)
+
 
 PHMC-LAR is a novel regime switching model dedicated to time series data.\
 Let $\{X_t\}$ a time series subject to switches in regime. 
