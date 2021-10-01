@@ -1,6 +1,7 @@
 ---
 title: "Partially Hidden Markov Chain Linear AutoRegressive model (PHMC-LAR)"
 output:
+  pdf_document: default
   html_document: default
 ---
 
@@ -31,6 +32,7 @@ We present three experiments within which PHMC-LAR model was applied to syntheti
  * scipy
  * pickle
  * concurrent.futures
+ * sklearn
 
 ## Learn PHMC-LAR model parameters by EM algortihm
 hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, states, innovation, init_method="rand", nb_iters=500, epsilon=1e-6, nb_init=10, nb_iters_init=5)
@@ -119,7 +121,7 @@ states.append(-1 * np.ones(shape=(1, data[0].shape[0]), dtype=np.int64))
  
 ## Experiment on synthetetic data
 ### Data description
-Binary files data-set_txxx_T=yyyy_N=zzz contain data simulated from PHMC-LAR(p=2, K=4) defines as follows:
+Binary files *data-set_txxx_T=yyyy_N=zzz* contain data simulated from PHMC-LAR(p=2, K=4) defines as follows:
 
 $$ A = \left(
           \begin{array}{cccc} 
@@ -166,7 +168,7 @@ Note that, data_S_for and data_X_for are respectively 30-steps ahead out-of-samp
 ```
 with
 
- * **data_file** Training data file, equals data-set_train_T=100_N=X for X=1, 10, 100.\
+ * **data_file** Training data file, equals *data-set_train_T=100_N=X* for X=1, 10, 100.\
  * **output_dir** The name of the output directory.\
  * **P $\in [0, 100]$** Percentage of labelled observation within training set.\
  * **rho $\in [0, 100[$** The level of unreliability upon labels.
@@ -178,9 +180,9 @@ File *synthetic_data_inference.py* and *synthetic_data_forecasting.py* contains 
 ## Experiment on realistic machine condition data
 
 ### Data description
-Directories train_FD00X for X=1,2,3,4 contain the health indicators [1,2] and the ground truth segementations [3] computed from the corresponding original CMAPSS datasets [4].\
-Files train_FD00X_LHI_state are binary files in which health indicators and ground truth segementations was serialized by pickle module.\
-Script cmapss_experiment.py takes one of these files as its first argument.
+Directories *train_FD00X* for X=1,2,3,4 contain the health indicators [1,2] and the ground truth segementations [3] computed from the corresponding original CMAPSS datasets [4].\
+Files *train_FD00X_LHI_state* are binary files in which health indicators and ground truth segementations was serialized by pickle module.\
+Script *cmapss_experiment.py* takes one of these files as its first argument.
 
 
 [1] E. Ramasso. Investigating computational geometry for failure prognostics. Int. J. Progn. Health Manag., vol. 5, no. 1, p. 005, 2014.\
@@ -194,10 +196,10 @@ Script cmapss_experiment.py takes one of these files as its first argument.
 ```
 with
 
- * **data_file** Equals data/cmapss-data/train_FD00X_HI_state for X=1,2,3,4.\
+ * **data_file** Equals *data/cmapss-data/train_FD00X_HI_state* for X=1,2,3,4.\
  * **output_dir** The name of the output directory.\
  * **P** Equals 0 or 1. 0 means unsupervised scheme (MSAR model) and 1 means semi-supervised schem (PHMC-LAR model).\
  * **D** The autoregressive order.
  
-The estimated model is serialized within a binary file and saved in *output_dir*.\
+The estimated model is serialized within a binary file and saved in **output_dir**.\
 File *cmapss_inference.py* contains functions that allow to perform inference task.

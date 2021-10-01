@@ -374,6 +374,7 @@ X_t \,|\, X_{t-p}^{t-1}, Z_t=k  \,&amp;:=\, \phi_{0,k} + \sum_{i=1}^{p} \phi_{i,
 <li>scipy</li>
 <li>pickle</li>
 <li>concurrent.futures</li>
+<li>sklearn</li>
 </ul>
 </div>
 <div id="learn-phmc-lar-model-parameters-by-em-algortihm" class="section level2">
@@ -474,7 +475,7 @@ states.append(-1 * np.ones(shape=(1, data[0].shape[0]), dtype=np.int64))
 <h2>Experiment on synthetetic data</h2>
 <div id="data-description" class="section level3">
 <h3>Data description</h3>
-<p>Binary files data-set_txxx_T=yyyy_N=zzz contain data simulated from PHMC-LAR(p=2, K=4) defines as follows:</p>
+<p>Binary files <em>data-set_txxx_T=yyyy_N=zzz</em> contain data simulated from PHMC-LAR(p=2, K=4) defines as follows:</p>
 <p><span class="math display">\[ A = \left(
           \begin{array}{cccc} 
               0.5 &amp; 0.2 &amp; 0.1 &amp; 0.2\\
@@ -513,7 +514,7 @@ After unserialization operation, we get the following data regarding the file un
  python3 -O synthetic_data_experiment_2.py train_data_file output_dir rho</code></pre>
 <p>with</p>
 <ul>
-<li><strong>data_file</strong> Training data file, equals data-set_train_T=100_N=X for X=1, 10, 100.<br />
+<li><strong>data_file</strong> Training data file, equals <em>data-set_train_T=100_N=X</em> for X=1, 10, 100.<br />
 </li>
 <li><strong>output_dir</strong> The name of the output directory.<br />
 </li>
@@ -529,9 +530,9 @@ File <em>synthetic_data_inference.py</em> and <em>synthetic_data_forecasting.py<
 <h2>Experiment on realistic machine condition data</h2>
 <div id="data-description-1" class="section level3">
 <h3>Data description</h3>
-<p>Directories train_FD00X for X=1,2,3,4 contain the health indicators [1,2] and the ground truth segementations [3] computed from the corresponding original CMAPSS datasets [4].<br />
-Files train_FD00X_LHI_state are binary files in which health indicators and ground truth segementations was serialized by pickle module.<br />
-Script cmapss_experiment.py takes one of these files as its first argument.</p>
+<p>Directories <em>train_FD00X</em> for X=1,2,3,4 contain the health indicators [1,2] and the ground truth segementations [3] computed from the corresponding original CMAPSS datasets [4].<br />
+Files <em>train_FD00X_LHI_state</em> are binary files in which health indicators and ground truth segementations was serialized by pickle module.<br />
+Script <em>cmapss_experiment.py</em> takes one of these files as its first argument.</p>
 <p>[1] E. Ramasso. Investigating computational geometry for failure prognostics. Int. J. Progn. Health Manag., vol. 5, no. 1, p. 005, 2014.<br />
 [2] <a href="https://www.mathworks.com/matlabcentral/fileexchange/54808-segmentation-of-cmapss-trajectories-into-states" class="uri">https://www.mathworks.com/matlabcentral/fileexchange/54808-segmentation-of-cmapss-trajectories-into-states</a>.<br />
 [3] E. Ramasso, Segmentation of CMAPSS health indicators into discrete states for sequence-based classification and prediction purposes,” tech.rep., 2016.<br />
@@ -542,7 +543,7 @@ Script cmapss_experiment.py takes one of these files as its first argument.</p>
 <pre class="{pyhton}"><code> python3 -O cmapss-experiment.py data_file output_dir P D</code></pre>
 <p>with</p>
 <ul>
-<li><strong>data_file</strong> Equals data/cmapss-data/train_FD00X_HI_state for X=1,2,3,4.<br />
+<li><strong>data_file</strong> Equals <em>data/cmapss-data/train_FD00X_HI_state</em> for X=1,2,3,4.<br />
 </li>
 <li><strong>output_dir</strong> The name of the output directory.<br />
 </li>
@@ -550,7 +551,7 @@ Script cmapss_experiment.py takes one of these files as its first argument.</p>
 </li>
 <li><strong>D</strong> The autoregressive order.</li>
 </ul>
-<p>The estimated model is serialized within a binary file and saved in <em>output_dir</em>.<br />
+<p>The estimated model is serialized within a binary file and saved in <strong>output_dir</strong>.<br />
 File <em>cmapss_inference.py</em> contains functions that allow to perform inference task.</p>
 </div>
 </div>
