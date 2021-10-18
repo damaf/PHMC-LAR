@@ -40,26 +40,35 @@ class Gaussian_X(RSARM):
         self.psi["means"] = np.zeros(shape=self.order, dtype=np.float64)
         self.psi["covar"] = np.identity(n=self.order, dtype=np.float64)
         
-        #LAR parameters' initialization
+        #-----------LAR parameters' initialization
+        #random initialization: used for CMAPSS datasets and synthetic data
         if(method == "rand"):           
-            #-----used for CMAPSS datasets and ML paper
             self.intercept = np.zeros(dtype=np.float64, shape=self.nb_regime)
             self.coefficients = np.random.uniform(-1.0, 1.0, (self.order, self.nb_regime))   
             self.sigma = np.random.uniform(0.2, 4, self.nb_regime)
-        
-            """
-            #-----more generic initialization    
-            self.coefficients = np.zeros(dtype=np.float64, \
-                                     shape=(self.order, self.nb_regime)) 
-            self.sigma = np.ones(dtype=np.float64, shape=self.nb_regime) 
-            #--intercepts are set to the unconditional mean of data
+            
+        elif(method == "datadriven"):  
+            #--compute the unconditional mean and covariance of data
             unc_mean = 0.0
+            unc_std = 0.0
             S = len(self.data) 
             for i in range(S):
                 unc_mean = unc_mean + np.mean(self.data[i])
-            self.intercept = unc_mean * \
-                                np.ones(dtype=np.float64, shape=self.nb_regime) 
-            """       
+                unc_std = unc_std + np.std(self.data[i])
+                
+            unc_mean = unc_mean / S
+            unc_std = unc_std / S
+            
+            #--initialization
+            self.coefficients = np.zeros(dtype=np.float64, \
+                                     shape=(self.order, self.nb_regime)) 
+            self.sigma = unc_std * np.ones(dtype=np.float64, shape=self.nb_regime) 
+            
+            two_std = 2*unc_std
+            self.intercept = np.random.uniform(unc_mean-two_std, \
+                                               unc_mean+two_std, \
+                                               self.nb_regime)
+            
         else:
             print("ERROR: in class gaussian, unkown initialization method!\n")
             exit(1)

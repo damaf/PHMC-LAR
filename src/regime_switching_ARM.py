@@ -29,7 +29,8 @@ class RSARM():
         #  
         self.nb_regime = 0
         
-        ## @brief Auto--regressive coefficients: \n
+        ## @brief Auto-regressive coefficients: \n
+        #  order x nb_regime array.
         #  Each regime has its own auto-regressive coefficients.
         #  coefficients[i,k] is the coefficient associated with lagged value 
         #  X_{t-{i+1}} under state k.
