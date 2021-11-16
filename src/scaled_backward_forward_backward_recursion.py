@@ -23,7 +23,6 @@
 #  BFB is a generalization of the well-known Forward Backward 
 #  recursion in which the process is completely hidden.
 #  
-#  What happens when the process is completely observed ????
 #
 ###############################################################################
 
