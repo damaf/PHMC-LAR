@@ -35,8 +35,7 @@ import math
 #
 #  @param M The number of states.
 #  @param LL The likelihood matrix of dimension TxM where: \n
-#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}), where d is AR
-#    process order. \n
+#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}). \n
 #  * \theta^{(X,z)} is the set of parameters related to the z^th regime.
 #  * order is the number of past values of X_t used in its prediction.
 #
@@ -176,8 +175,7 @@ def first_backward_step(M, Sigma, A, prob_sigma):
 #
 #  @param M The number of states.
 #  @param LL The likelihood matrix of dimension TxM where: \n
-#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}), where d is AR
-#    process order. \n
+#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}). \n
 #  * \theta^{(X,z)} is the set of parameters related to the z^th regime.
 #  * order is the number of past values of X_t used in its prediction.
 #
@@ -291,8 +289,7 @@ def forward_step(M, LL, Sigma, A, Pi, Tau_tilde, prob_sigma):
 #
 #  @param M The number of states.
 #  @param LL The likelihood matrix of dimension TxM where: \n
-#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}), where d is AR
-#    process order. \n
+#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}). \n
 #  * \theta^{(X,z)} is the set of parameters related to the z^th regime.
 #  * order is the number of past values of X_t used in its prediction.
 #
@@ -383,7 +380,7 @@ def likelihood(C_t):
 
 
 ## @fn compute_gamma_bis
-#  @brief This function compute gamma probabilities from Alpha_tilde, 
+#  @brief This function computes gamma probabilities from Alpha_tilde, 
 #   Beta_tilde and C_t.
 #  
 #  @param Alpha_tilde
@@ -408,7 +405,7 @@ def  compute_gamma_bis(Alpha_tilde, Beta_tilde, C_t):
 
 
 ## @fn compute_gamma
-#  @brief This function compute gamma probabilities from Xi probabilities.
+#  @brief This function computes gamma probabilities from Xi probabilities.
 #  
 #  @param Xi
 #
@@ -442,8 +439,7 @@ def  compute_gamma(Xi):
 #  @brief This function runs the second backward step of BFB.
 #  
 #  @param LL The likelihood matrix of dimension TxM where: \n
-#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}), where d is AR
-#    process order. \n
+#  * LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)}). \n
 #  * \theta^{(X,z)} is the set of parameters related to the z^th regime.
 #  * order is the number of past values of X_t used in its prediction.
 #
