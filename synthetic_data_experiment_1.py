@@ -94,7 +94,7 @@ start_time = time.time()
 if(len(sys.argv) != 4):
     print("ERROR: script unreliable_labels.py takes 4 arguments !")
     print("Usage: ./synthetic_data_experiment_1.py train_data_file output_dir P")
-    exit(1)
+    sys.exit(1)
 
 
 #----percentage of labelled observations
@@ -103,7 +103,7 @@ P = float(sys.argv[3])
 
 if(P > 100 or P < 0):
     print("ERROR: script synthetic_data_experiment_1.py: 0 <= P <= 100 !")
-    exit(1)
+    sys.exit(1)
     
 
 #----hyper-parameters setting

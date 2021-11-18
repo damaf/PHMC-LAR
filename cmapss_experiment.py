@@ -110,7 +110,7 @@ start_time = time.time()
 if(len(sys.argv) != 5):
     print("ERROR: script run_training.py takes 4 arguments !")
     print("Usage: ./cmapss_experiment.py train_data_file output_dir P D")
-    exit(1)
+    sys.exit(1)
 
 
 #----percentage of labelled observations
@@ -120,7 +120,7 @@ P = int(sys.argv[3])
 if(P != 0 and P != 1 and P != 2):
     print("ERROR: argument P takes three values, 0 for unsupervised case, ", \
           "1 for semi-supervised case and 2 for supervised case!")
-    exit(1)
+    sys.exit(1)
     
 
 #----hyper-parameters setting

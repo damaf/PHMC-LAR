@@ -95,7 +95,7 @@ def create_unreliable_labels(data_S, nb_regimes, rho, sigma):
                 
             else:
                 print("ERROR: create unreliable labels, error = {}".format(error))
-                exit(1)
+                sys.exit(1)
                          
     return res
 
@@ -109,7 +109,7 @@ start_time = time.time()
 if(len(sys.argv) != 4):
     print("ERROR: script unreliable_labels.py takes 3 arguments !")
     print("Usage: ./synthetic_data_experiment_2.py train_data_file output_dir rho")
-    exit(1)
+    sys.exit(1)
 
 
 #----unreliability level of labels, given in percentage
@@ -118,7 +118,7 @@ rho = float(sys.argv[3])
 
 if(rho >= 100 or rho < 0):
     print("ERROR: script synthetic_data_experiment_2.py: 0 <= rho < 100 !")
-    exit(1)
+    sys.exit(1)
     
 #standard deviation of beta law, fixed. 
 #This value has been used by Ramesso and Denoeux
