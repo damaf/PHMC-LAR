@@ -54,14 +54,17 @@ class PHMC():
         self.Pi = np.ones(dtype=np.float64, shape=(1, M)) / M        
         self.A = np.ones(dtype=np.float64, shape=(M, M)) / M
     
+        return 
 
         
     ## @brief
     #
     def update_parameters(self, F, list_Gamma):
-        (A_, Pi_) = update_MC_parameters(F, list_Gamma)
+        (Pi_, A_) = update_MC_parameters(F, list_Gamma)
         self.A = A_
         self.Pi = Pi_
+        
+        return 
     
     
     ## @brief
@@ -69,6 +72,8 @@ class PHMC():
     def set_parameters(self, Pi_, A_):
         self.Pi = Pi_
         self.A = A_
+    
+        return 
     
     
 ## @fn update_MC_parameter
@@ -81,8 +86,8 @@ class PHMC():
 #  T_s denotes the specific size of sequence s (order initial values excluded).
 #
 #  @return (A, Pi):
-#    * Matrix MxM, A[i,j] = a_{i,j} = P(Z_t=j|Z_{t-1}=i).
 #    * Pi Line vector 1xM, initial state probabilities, Pi[1,k] = P(Z_1 = k).
+#    * Matrix MxM, A[i,j] = a_{i,j} = P(Z_t=j|Z_{t-1}=i).
 #  
 def update_MC_parameters(F, list_Gamma):
     
@@ -134,7 +139,7 @@ def update_MC_parameters(F, list_Gamma):
         assert(np.sum(np.isnan(F[i, :])) == 0)
         assert(np.sum(F[i, :] < 0.) == 0)
             
-    return (F, Pi)
+    return (Pi, F)
 
 
 ## @fn update_F_from_Xi

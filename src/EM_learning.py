@@ -2,7 +2,7 @@ import numpy as np
 import concurrent.futures
 from gaussian_innovation import Gaussian_X
 from scaled_backward_forward_backward_recursion import BFB
-from partially_hidden_MC import PHMC, update_F_from_Xi
+from partially_hidden_MC import PHMC, update_F_from_Xi, update_MC_parameters
 
 
 
@@ -37,31 +37,20 @@ def compute_ll(X_process, list_Gamma):
 ## @fn
 #  @brief Run BFB algorithm on the s^{th} sequence.
 #
-#  @return BFB outputs and sequence index which is used to properly collect
-#   the results of different threads as they complete.
+#  @return BFB outputs and sequence index which is used in main process 
+#   to properly collect the results of different child processes.
 #
-def run_BFB_s(X_process, PHMC_process, states_s, s):
-    
-    #LL a T_s x X_order matrix of likelihood with
-    #LL[t,z] = g(x_t | x_{t-order}^{t-1}, Z_t=z ; \theta^{(X,z)})
-    LL = X_process.total_likelihood_s(s)
-    
+def run_BFB_s(M, LL, A, Pi, states_s, s):
+        
     #run backward-forward-backward on the s^th sequence
-    return (s,  BFB(X_process.nb_regime, LL, states_s, PHMC_process.A, \
-                    PHMC_process.Pi)  )
+    return (s,  BFB(M, LL, states_s, A, Pi)  )
     
-## @fn
-#  @brief Run the step M_X of EM in which X_process parameters are updated.
-#
-def M_X_step(X_process, list_Gamma):  
-    return X_process.update_parameters(list_Gamma)
-
-
+    
 ## @fn
 #  @brief Run the step M_X of EM in which PHMC_process parameters are updated.
 #
-def M_Z_step(PHMC_process, F, list_Gamma):
-    return PHMC_process.update_parameters(F, list_Gamma)
+def M_Z_step(F, list_Gamma):
+    return update_MC_parameters(F, list_Gamma)
 
 
 ## @fn compute_norm
@@ -133,8 +122,8 @@ def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
     #------Runs EM nb_iters_init times on each initial values 
     output_params = []
     
-    #### Begin OpenMP parallel execution     
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    #### Begin multi-process parallel execution     
+    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
         futures = []
         for _ in range(nb_init):
             futures.append( executor.submit(run_EM_on_init_param,  X_order, \
@@ -144,7 +133,7 @@ def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
              
         for f in concurrent.futures.as_completed(futures):
             output_params.append(f.result())            
-    #### End OpenMP parallel execution    
+    #### End multi-process parallel execution    
         
     #------Find parameters that yields maximum likehood
     #maximum likeliked within [-inf, 0]
@@ -286,16 +275,18 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
         total_log_ll = 0.0
             
         #----------------------------begin E-step  
-        #### begin OpenMP parallel execution
+        #### begin multi-process parallel execution
         # list of tasks, one per sequence
         list_futures = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
             #run backward forward backward algorithm on each equence
             for s in range(S):
-                list_futures.append( executor.submit(run_BFB_s, X_process, \
-                                                     PHMC_process, states[s], \
-                                                     s) )
-            #collect the results as threads complete
+                list_futures.append( executor.submit(run_BFB_s, M, \
+                                     X_process.total_likelihood_s(s), \
+                                     prev_estimated_param[1], \
+                                     prev_estimated_param[2], states[s], s) )
+                
+            #collect the results as tasks complete
             for f in concurrent.futures.as_completed(list_futures):
                 #results of the s^{th} sequence
                 (s, (log_ll_s, Xi_s, Gamma_s, Alpha_s)) = f.result()
@@ -306,20 +297,22 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
                 list_Alpha[s] = Alpha_s          
                 #total log-likelihood over all observed sequence
                 total_log_ll = total_log_ll + log_ll_s                  
-        #### end OpenMP parallel execution
+        #### end multi-process parallel execution
         #----------------------------end E-step
         
         #----------------------------begin M-steps 
-        #### begin OpenMP parallel execution
-        with concurrent.futures.ThreadPoolExecutor() as executor: 
-            #-----------M-Z step
-            task1 = executor.submit(M_Z_step, PHMC_process, F, list_Gamma)
-            #-----------M-X step
-            task2 = executor.submit(M_X_step, X_process, list_Gamma)
+        #### begin multi-process parallel execution
+        with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor: 
+            #------M-Z step
+            task = executor.submit(M_Z_step, F, list_Gamma)
             
-            task1.result()
-            task2.result()            
-        #### end OpenMP parallel execution
+        #------M-X step
+        X_process.update_parameters(list_Gamma)
+ 
+        #collect result of task and update Theta_Z
+        (Pi_, A_) = task.result()
+        PHMC_process.set_parameters(Pi_, A_)           
+        #### end multi-process parallel execution
         #----------------------------end M-steps 
         
         #-----------------------begin EM stopping condition        

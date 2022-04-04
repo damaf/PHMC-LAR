@@ -186,16 +186,16 @@ class RSARM():
             exit(1)
         
         #-------------Update regime parameters in parallel  
-        #### BEGIN OpenMP parallel execution 
+        #### BEGIN multi-process parallel execution 
         futures = []        
         
-        with concurrent.futures.ThreadPoolExecutor() as executor:               
-            #lauch threads
+        with concurrent.futures.ProcessPoolExecutor(max_workers=self.nb_regime) as executor:               
+            #lauch tasks
             for k in range(self.nb_regime):
                 futures.append( executor.submit(call_update_parameters_regime_k, \
                                                self, list_Gamma, k) )      
                 
-            #collect the results as threads complete
+            #collect the results as tasks complete
             for f in concurrent.futures.as_completed(futures):
                 #update regime k parameters
                 (coefficients_k, intercept_k, sigma_k, k) = f.result()                  
@@ -203,7 +203,7 @@ class RSARM():
                 self.sigma[k] = sigma_k     
                 if(self.order != 0):
                     self.coefficients[:,k] = coefficients_k                
-        #### End OpenMP parallel execution    
+        #### End multi-process parallel execution    
                                 
         return 
     
@@ -219,7 +219,7 @@ class RSARM():
     #  @param k
     #
     #  @return The estimation of regime k parameters and the index of regime
-    #  used to properly collect the results of different threads as they complete.
+    #  used in main process to properly collect the results of child processes.
     #   * coefficients_k order length array
     #   * intercerpt_k real number
     #   * sigma_k real number
