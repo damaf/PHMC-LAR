@@ -85,6 +85,11 @@ def compute_norm(prev_estimated_param, PHMC_process, X_process):
 def run_EM_on_init_param(X_order, nb_regimes, data, initial_values, states, \
                          innovation, nb_iters_init):
     
+    # re-seed the pseudo-random number generator.
+    # This guarantees that each process/thread runs this function with
+    # a different seed.
+    np.random.seed()
+    
     #----AR process initialization  
     if (innovation == "gaussian"):
         X_process = Gaussian_X(X_order, nb_regimes, data, initial_values, \
@@ -122,8 +127,9 @@ def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
     #------Runs EM nb_iters_init times on each initial values 
     output_params = []
     
-    #### Begin multi-process parallel execution     
-    with concurrent.futures.ProcessPoolExecutor(max_workers=32) as executor:
+    #### Begin multi-process parallel execution    
+    nb_workers = min(10, nb_init)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=nb_workers) as executor:
         futures = []
         for _ in range(nb_init):
             futures.append( executor.submit(run_EM_on_init_param,  X_order, \
@@ -141,7 +147,7 @@ def random_init_EM(X_order, nb_regimes, data, initial_values, states, \
     max_ll = -1e300  
     max_ind = -1
     for i in range(nb_init):             
-        ##print(output_params[i][0])        
+        print(output_params[i][0])        
         if (output_params[i][0] > max_ll):
             max_ll = output_params[i][0]
             max_ind = i
