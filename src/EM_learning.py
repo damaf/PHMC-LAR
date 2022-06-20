@@ -262,9 +262,11 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
     prec_total_log_ll = -1e300  
     
     #current/previous estimated parameters
-    prev_estimated_param = (-np.inf,  PHMC_process.A, PHMC_process.Pi, [], [], \
-               X_process.coefficients, X_process.sigma, X_process.intercept,  \
-               X_process.psi)
+    prev_estimated_param = (-np.inf,  PHMC_process.A.copy(), \
+                            PHMC_process.Pi.copy(), [], [], \
+                            X_process.coefficients.copy(), \
+                            X_process.sigma.copy(), X_process.intercept.copy(),  \
+                            X_process.psi)
     
     curr_estimated_param = prev_estimated_param
         
@@ -312,12 +314,12 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
             #------M-Z step
             task = executor.submit(M_Z_step, F, list_Gamma)
             
-        #------M-X step
-        X_process.update_parameters(list_Gamma)
+            #------M-X step
+            X_process.update_parameters(list_Gamma)
  
-        #collect result of task and update Theta_Z
-        (Pi_, A_) = task.result()
-        PHMC_process.set_parameters(Pi_, A_)           
+            #collect result of task and update Theta_Z
+            (Pi_, A_) = task.result()
+            PHMC_process.set_parameters(Pi_, A_)           
         #### end multi-process parallel execution
         #----------------------------end M-steps 
         
@@ -327,9 +329,11 @@ def EM (X_process, PHMC_process, states, nb_iters, epsilon, log_info=True):
         abs_of_diff = compute_norm(prev_estimated_param, PHMC_process, X_process) 
         
         curr_estimated_param = ((total_log_ll + X_process.init_val_ll()),  \
-               PHMC_process.A, PHMC_process.Pi, list_Gamma, list_Alpha,  \
-               X_process.coefficients, X_process.sigma, X_process.intercept,  \
-               X_process.psi)
+                                PHMC_process.A.copy(), PHMC_process.Pi.copy(), \
+                                list_Gamma, list_Alpha,  \
+                                X_process.coefficients.copy(), \
+                                X_process.sigma.copy(), X_process.intercept.copy(),  \
+                                X_process.psi)
     
         if(np.isnan(abs_of_diff)):  #EM stops with a warning, ADDED 21/06/13
             #LOG-info
