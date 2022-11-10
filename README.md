@@ -20,15 +20,15 @@ Model parameters are estimated by Expectation-Maximization algorithm (EM).
 We present three experiments within which PHMC-LAR model was applied to synthetic simulated data and realistic machine condition data.
 
 ### Related Papers
- * Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Fatoumata Dama, Christine Sinoquet. University of Nantes, LS2N UMR CNRS 6004. Accepted at the 33rd IEEE International Conference on Tools with Artificial Intelligence(ICTAI): 8 pages, 1-3 november 2021, virtual.
- * F. Dama and C. Sinoquet. Partially Hidden Markov Chain Multivariate Linear Autoregressive model: inference and forecasting. Application to machine health prognostics. To appear in Machine Learning.
+ * Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Fatoumata Dama, Christine Sinoquet. University of Nantes, LS2N UMR CNRS 6004. Accepted at the **33rd IEEE International Conference on Tools with Artificial Intelligence(ICTAI)**: 8 pages, 1-3 november 2021, virtual.
+ * F. Dama and C. Sinoquet. Partially Hidden Markov Chain Multivariate Linear Autoregressive model: inference and forecasting. Application to machine health prognostics. To appear in **Machine Learning**.
 
 ### Required Tools 
- * numpy
- * scipy
- * pickle
- * concurrent.futures
- * sklearn
+ * Numpy
+ * Scipy
+ * Pickle
+ * Concurrent.futures
+ * Sklearn
 
 ## Learn PHMC-LAR model parameters by EM algortihm
 hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, states, innovation, init_method="rand", nb_iters=500, epsilon=1e-6, nb_init=10, nb_iters_init=5)
@@ -128,16 +128,16 @@ $$
 Theses files were created by the *dump* function of pickle package. Data can be unserialized using the "load" function from the same module.\
 After unserialization operation, we get the following data regarding the file under consideration:
 
-  1) For files having suffix "test" we get variables (data_S, data_X, init_values).
-  2) For files having suffix "train" we get variables (data_S, data_X, init_values, data_S_for, data_X_for).
+  1) For files having suffix "test", we get variables (data_S, data_X, init_values).
+  2) For files having suffix "train", we get variables (data_S, data_X, init_values, data_S_for, data_X_for).
 
 The previous variables are defined as bellow:
 
-  *  data_S list of N state sequences of length T.
-  *  data_X list of N time series of length T.
-  *  init_values list of N initial values of length 2, associated to the previous time series.
-  *  data_S_for list of N state sequences of length 30.
-  *  data_X_for list of N time series of length 30.
+  *  data_S list of N state sequences of length T
+  *  data_X list of N time series of length T
+  *  init_values list of N initial values of length 2, associated to the previous time series
+  *  data_S_for list of N state sequences of length 30
+  *  data_X_for list of N time series of length 30
 
 Note that, data_S_for and data_X_for are respectively 30-steps ahead out-of-sample forecast states and values. They are used in forecating experiments.
 
@@ -150,10 +150,10 @@ Note that, data_S_for and data_X_for are respectively 30-steps ahead out-of-samp
 ```
 with
 
- * **data_file** Training data file, equals "data-set_train_T=100_N=y" for y=1, 10, 100.
- * **output_dir** The name of the output directory.
- * **P $\in [0, 100]$** Percentage of labelled observation within training set.
- * **rho $\in [0, 100[$** The level of unreliability upon labels.
+ * **data_file** Training data file, equals "data-set_train_T=100_N=y" for y=1, 10, 100
+ * **output_dir** The name of the output directory
+ * **P $\in [0, 100]$** Percentage of labelled observation within training set
+ * **rho $\in [0, 100[$** The level of unreliability upon labels
 
 The estimated model is serialized into a binary file and saved within the given output_dir.\
 File *synthetic_data_inference.py* and *synthetic_data_forecasting.py* contains functions that allow to perform inference and forecasting tasks.
