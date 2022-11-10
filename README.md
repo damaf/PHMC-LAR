@@ -3,7 +3,7 @@
 
 
 PHMC-LAR is a novel regime switching model dedicated to time series data.\
-Let $\{X_t\}$ a time series subject to switches in regime. 
+Let $\{X_t\}$ an univariate time series subject to switches in regime. 
 Let $\{Z_t\}$ the corresponding state process which is observed at some random timesteps and hidden at other timesteps.
 In PHMC-LAR model, $\{Z_t\}$ is a PHMC process and within each regime, $X_t$ is a LAR process:
 
@@ -22,7 +22,7 @@ We present three experiments within which PHMC-LAR model was applied to syntheti
 
 ### Related Papers
  * Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Fatoumata Dama, Christine Sinoquet. University of Nantes, LS2N UMR CNRS 6004. Accepted at the 33rd IEEE International Conference on Tools with Artificial Intelligence(ICTAI): 8 pages, 1-3 november 2021, virtual.
- * F. Dama and C. Sinoquet. Partially Hidden Markov Chain Linear Autoregressive model : inference and forecasting. Under revision at Machine Learning Journal ([arXiv version](https://arxiv.org/abs/2102.12584)).
+ * F. Dama and C. Sinoquet. Partially Hidden Markov Chain Multivariate Linear Autoregressive model: inference and forecasting. Application to machine health prognostics. To appear in Machine Learning.
 
 ### Required Tools 
  * numpy
@@ -36,7 +36,7 @@ hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, states, in
 
 **Parameters**
 
-  * **X_order: *positive int value* **\
+  * **X_order**: *positive int value* \
     Autoregressive order.\ 
   * **nb_regimes: *strictly positive int* **\
     Number of switching regimes.\
