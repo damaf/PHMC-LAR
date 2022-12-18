@@ -19,9 +19,8 @@ Model parameters are estimated by Expectation-Maximization algorithm (EM).
 
 We present three experiments within which PHMC-LAR model was applied to synthetic simulated data and realistic machine condition data.
 
-### Related Papers
- * Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Fatoumata Dama, Christine Sinoquet. University of Nantes, LS2N UMR CNRS 6004. Accepted at the **33rd IEEE International Conference on Tools with Artificial Intelligence(ICTAI)**: 8 pages, 1-3 november 2021, virtual.
- * F. Dama and C. Sinoquet. Partially Hidden Markov Chain Multivariate Linear Autoregressive model: inference and forecasting. Application to machine health prognostics. To appear in **Machine Learning**.
+### Related Paper
+Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Fatoumata Dama, Christine Sinoquet. University of Nantes, LS2N UMR CNRS 6004. Accepted at the **33rd IEEE International Conference on Tools with Artificial Intelligence(ICTAI)**: 8 pages, 1-3 november 2021, virtual
 
 ### Required Tools 
  * Numpy
