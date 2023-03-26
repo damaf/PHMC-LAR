@@ -22,7 +22,7 @@ We present three experiments within which PHMC-LAR model was applied to syntheti
 ### Related work
 If you use this model in your work, please refer to it as follows:
 
-F. Dama, C. Sinoquet (2021). Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Proceedings of the 33rd IEEE International Conference on Tools with Artificial Intelligence (ICTAI). **Best student paper award** (237 papers presented).
+F. Dama, C. Sinoquet (2021). Prediction and Inference in a Partially Hidden Markov-switching Framework with Autoregression. Application to Machinery Health Diagnosis. Proceedings of the 33rd IEEE International Conference on Tools with Artificial Intelligence (ICTAI).
 
 The present package has been implemented by **Fatoumata Dama**, PhD student (2019-2022), Nantes University, France.
 
