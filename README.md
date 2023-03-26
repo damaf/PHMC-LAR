@@ -30,7 +30,7 @@ The present package has been implemented by **Fatoumata Dama**, PhD student (201
  * Numpy
  * Scipy
  * Pickle
- * Concurrent.futures
+ * Futures
  * Sklearn
 
 ## Learn PHMC-LAR model parameters by EM algortihm
