@@ -30,7 +30,7 @@ The present package has been implemented by **Fatoumata Dama**, PhD student (201
  * Python 3.6
  * Numpy
  * Scipy
- * Pickle
+ * Pickle5
  * Futures
  * Scikit-learn
 
