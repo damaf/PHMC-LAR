@@ -32,7 +32,7 @@ The present package has been implemented by **Fatoumata Dama**, PhD student (201
  * Scipy
  * Pickle
  * Futures
- * Sklearn
+ * Scikit-learn
 
 ## Learn PHMC-LAR model parameters by EM algortihm
 hmc_lar_parameter_learning(X_order, nb_regimes, data, initial_values, states, innovation, init_method="rand", nb_iters=500, epsilon=1e-6, nb_init=10, nb_iters_init=5)
