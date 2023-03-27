@@ -27,7 +27,7 @@ F. Dama, C. Sinoquet (2021). Prediction and Inference in a Partially Hidden Mark
 The present package has been implemented by **Fatoumata Dama**, PhD student (2019-2022), Nantes University, France.
 
 ### Required Tools 
- * Python3
+ * Python 3.6
  * Numpy
  * Scipy
  * Pickle
