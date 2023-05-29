@@ -26,6 +26,8 @@ F. Dama, C. Sinoquet (2021). Prediction and Inference in a Partially Hidden Mark
 
 The present package has been implemented by **Fatoumata Dama**, PhD student (2019-2022), Nantes University, France.
 
+Fatoumata Dama was supported by a PhD scholarship granted by the French Ministery for Higher Education, Research and Innovation. She worked under the supervision of Christine Sinoquet, Associate Professor, PhD supervisor, LS2N / UMR CNRS 6004 (Digital Science Institute of Nantes), Nantes University, France.
+
 ### Required Tools 
  * Python 3.6
  * Numpy
